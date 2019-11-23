@@ -1,6 +1,7 @@
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
-
+const merge = require('webpack-merge')
+const baseConfig = require('./webpack.base')
 
 // 关于target: 'node'
 // 若在一个模块引入了path模块
@@ -9,23 +10,15 @@ const nodeExternals = require('webpack-node-externals')
 // 但是node_modules中的文件依然会被打包，这时还要配合webpack-node-externals设置external
 // webpack的externals文档： https://webpack.docschina.org/configuration/externals/
 
-
-module.exports = {
-  target: 'node',  // 若要使用webpack打包node端的代码，需要加上此项
+const serverConfig = {
+  target: 'node', // 若要使用webpack打包node端的代码，需要加上此项
   externals: [nodeExternals()],
   mode: 'development',
-  entry: './src/index.js',
+  entry: './src/server/index.js',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build')
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js?$/,
-        loader: 'babel-loader',
-        exclude: '/node_modules/',
-      }
-    ]
   }
 }
+
+module.exports = merge(baseConfig, serverConfig)
